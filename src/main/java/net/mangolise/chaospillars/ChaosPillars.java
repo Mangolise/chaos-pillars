@@ -5,6 +5,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
+import net.mangolise.chaospillars.feats.ItemSpawning;
 import net.mangolise.combat.CombatConfig;
 import net.mangolise.combat.MangoCombat;
 import net.mangolise.combat.events.PlayerKilledEvent;
@@ -20,16 +21,15 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.LightingChunk;
 import net.minestom.server.instance.block.Block;
-import net.minestom.server.item.ItemStack;
-import net.minestom.server.item.Material;
 import net.minestom.server.sound.SoundEvent;
-import net.minestom.server.timer.TaskSchedule;
 
 import java.time.Duration;
 import java.util.*;
 
 public class ChaosPillars extends BaseGame<ChaosPillars.Config> {
     public Instance instance;
+
+    final Set<Player> remainingPlayers = new HashSet<>(config().players);
 
     public ChaosPillars(Config config) {
         super(config);
@@ -43,14 +43,13 @@ public class ChaosPillars extends BaseGame<ChaosPillars.Config> {
         instance.enableAutoChunkLoad(true);
         instance.setChunkSupplier(LightingChunk::new);
 
-        worldAndPlayerSpawn(config().players);
+        worldAndPlayerSpawn();
         MinecraftServer.getSchedulerManager().scheduleNextTick(() -> {
             MangoCombat.enableGlobal(CombatConfig.create().withFakeDeath(true).withVoidDeath(true));
         });
     }
 
-    private void worldAndPlayerSpawn(Set<Player> players) {
-        final Set<Player> remainingPlayers = new HashSet<>(players);
+    private void worldAndPlayerSpawn() {
         Random random = new Random();
 
         int radius = random.nextInt(7, 10);
@@ -62,7 +61,7 @@ public class ChaosPillars extends BaseGame<ChaosPillars.Config> {
         for (Player player : remainingPlayers) {
             Vec spawnCircle = new Vec(radius, y, 0).rotateAroundY(funny).add(0.5, 0, 0.5);
 
-            setupItemSpawning(player);
+            ItemSpawning.setupItemSpawning(player);
 
             for (int i = 0; i < 10; i++) {
                 spawnCircle = spawnCircle.withY(y);
@@ -113,21 +112,6 @@ public class ChaosPillars extends BaseGame<ChaosPillars.Config> {
                         Component.text(""), Title.Times.times(Duration.ofMillis(250), Duration.ofMillis(1000), Duration.ofMillis(600))));
             }
         });
-    }
-
-    private void setupItemSpawning(Player player) {
-        Random random = new Random();
-        List<Material> allMaterials = List.copyOf(Material.values());
-        MinecraftServer.getSchedulerManager().scheduleTask(() -> {
-            player.getInventory().addItemStack(ItemStack.of(allMaterials.get(random.nextInt(0, allMaterials.size()))));
-
-             if (player.getGameMode().equals(GameMode.SPECTATOR)) {
-                 return TaskSchedule.stop();
-             } else {
-                 return TaskSchedule.seconds(random.nextInt(4, 5));
-             }
-
-        }, TaskSchedule.immediate());
     }
 
     @Override
