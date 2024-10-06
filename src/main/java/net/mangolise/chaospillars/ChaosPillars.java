@@ -52,7 +52,7 @@ public class ChaosPillars extends BaseGame<ChaosPillars.Config> {
     private void worldAndPlayerSpawn() {
         Random random = new Random();
 
-        int radius = random.nextInt(7, 10);
+        int radius = random.nextInt(7, 12);
         int y = 69;
         double funny = Math.PI;
 
