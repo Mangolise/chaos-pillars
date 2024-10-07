@@ -56,8 +56,6 @@ public class ChaosPillars extends BaseGame<ChaosPillars.Config> {
         int y = 69;
         double funny = Math.PI;
 
-        instance.setBlock(0, 69, 0, Block.AMETHYST_BLOCK);
-
         for (Player player : remainingPlayers) {
             Vec spawnCircle = new Vec(radius, y, 0).rotateAroundY(funny).add(0.5, 0, 0.5);
 
