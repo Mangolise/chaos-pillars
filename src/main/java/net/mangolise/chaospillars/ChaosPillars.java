@@ -1,6 +1,7 @@
 package net.mangolise.chaospillars;
 
 import net.mangolise.chaospillars.feats.PlayerDeathFeature;
+import net.mangolise.chaospillars.feats.SpawnEggFeature;
 import net.mangolise.combat.CombatConfig;
 import net.mangolise.combat.MangoCombat;
 import net.mangolise.gamesdk.BaseGame;
@@ -35,8 +36,6 @@ public class ChaosPillars extends BaseGame<ChaosPillars.Config> {
         });
     }
 
-
-
     public Set<Player> getRemainingPlayers() {
         return remainingPlayers;
     }
@@ -50,7 +49,8 @@ public class ChaosPillars extends BaseGame<ChaosPillars.Config> {
                 new EnderChestFeature(),
                 new LiquidFeature(),
                 new NoCollisionFeature(),
-                new PlayerDeathFeature()
+                new PlayerDeathFeature(),
+                new SpawnEggFeature()
         );
     }
 
